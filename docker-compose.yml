@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: scbadmin
+      POSTGRES_PASSWORD: ScBAdMiN
+      POSTGRES_DB: scbdevsecops
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  backend:
+    build:
+      context: ./product-service
+      dockerfile: Dockerfile
+    environment:
+      DATABASE_URL: postgres://scbadmin:ScBAdMiN@postgres:5432/scbdevsecops
+      ADDRESS: 0.0.0.0
+      PORT: 3001
+    depends_on:
+      - postgres
+    ports:
+      - "3001:3001"
+    command: >
+      sh -c "
+      npx prisma migrate deploy &&
+      ./run.sh"
+    volumes:
+      - ./product-service:/app
+
+  frontend:
+    build:
+      context: ./product-app
+      dockerfile: Dockerfile
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    environment:
+      REACT_APP_API_URL: http://localhost:3001
+
+volumes:
+  postgres_data:
