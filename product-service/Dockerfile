@@ -17,6 +17,7 @@ COPY . .
 RUN chmod +x ./run.sh
 
 # Build TypeScript files
+RUN npx prisma generate
 RUN npx tsc
 
 # Expose the port

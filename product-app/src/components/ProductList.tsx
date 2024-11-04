@@ -22,9 +22,11 @@ const ProductList: React.FC = () => {
     setIsModalOpen(false);
   };
 
+  const BACKEND_URL = "http://localhost:3001";
+
   const addOrEditProduct = async (_product: Product) => {
     try {
-      const response = await fetch(`http://localhost:3001/v1/products${_product.id ? `/${_product.id}` : ``}`, {
+      const response = await fetch(`${BACKEND_URL}/v1/products${_product.id ? `/${_product.id}` : ``}`, {
         method: mode === Mode.EDIT ? 'PUT' : 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -40,7 +42,7 @@ const ProductList: React.FC = () => {
   };
 
   const softDeleteProduct = async (productId: string) => {
-    const response = await fetch(`http://localhost:3001/v1/products/${productId}`, {
+    const response = await fetch(`${BACKEND_URL}/v1/products/${productId}`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
@@ -96,7 +98,7 @@ const ProductList: React.FC = () => {
   };
 
   const fetchProducts = async () => {
-    const response = await fetch(`http://localhost:3001/v1/products?page=${page}&limit=${DEFAULT_PAGE_SIZE}`);
+    const response = await fetch(`${BACKEND_URL}/v1/products?page=${page}&limit=${DEFAULT_PAGE_SIZE}`);
     const res = await response.json();
 
     setProducts(res.products);
